@@ -1,22 +1,29 @@
 "use client"; //not a server component but render both server and client
 
-import { CreateServerModal } from "@/components/modals/create-server-modal";
 import { useEffect, useState } from "react";
 
+import { CreateServerModal } from "@/components/modals/create-server-modal";
+import { InviteModal } from "@/components/modals/invite-modal";
+import { EditServerModal } from "@/components/modals/edit-server-modal";
+import { MembersModal } from "@/components/modals/members-modal";
+import { CreateChannelModal } from "@/components/modals/create-channel-modal";
 
 export const ModalProvider = () => {
+  const [isMounted, setIsMounted] = useState(false);
 
-    const [isMounted, setIsMounted] = useState(false);
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
-    useEffect(() => {
-        setIsMounted(true);
-    }, []);
+  if (!isMounted) return null;
 
-    if(!isMounted) return null;
-
-    return (
-        <>
-          <CreateServerModal />
-        </>
-    )
-}
+  return (
+    <>
+      <CreateServerModal />
+      <InviteModal />
+      <EditServerModal />
+      <MembersModal />
+      <CreateChannelModal />
+    </>
+  );
+};
