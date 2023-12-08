@@ -48,8 +48,9 @@ const formSchema = z.object({
 });
 
 export const CreateChannelModal = () => {
-  const { isOpen, onClose, type } = useModal();
+  const { isOpen, onClose, type, data } = useModal();
   const isModalOpen = isOpen && type === "createChannel";
+  const { channelType } = data;
 
   const router = useRouter();
   const params = useParams();
@@ -58,7 +59,7 @@ export const CreateChannelModal = () => {
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
-      type: ChannelType.TEXT,
+      type: channelType || ChannelType.TEXT,
     },
   });
 
@@ -75,6 +76,7 @@ export const CreateChannelModal = () => {
       await axios.post(url, values);
 
       form.reset();
+      onClose();
       router.refresh();
     } catch (error) {
       console.log(error);

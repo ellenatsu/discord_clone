@@ -14,7 +14,7 @@ import qs from "query-string";
 import { useRouter } from "next/navigation";
 
 import { MemberRole } from "@prisma/client";
-import UserAvatar from "@/components/user-avatar";
+import { UserAvatar } from "@/components/user-avatar";
 import { useModal } from "@/hooks/use-modal-store";
 import { ServerWithMembersWithProfiles } from "@/types";
 import {
@@ -35,7 +35,7 @@ import {
   DropdownMenuSubContent,
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
-} from "../ui/dropdown-menu";
+} from "@/components/ui/dropdown-menu";
 
 const roleIconMap = {
   GUEST: null,
