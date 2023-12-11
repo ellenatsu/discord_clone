@@ -10,7 +10,7 @@ export async function DELETE(
     const profile = await currentProfile();
 
     if (!profile) {
-      return new NextResponse("Unauthorized", { status: 404 });
+      return new NextResponse("Unauthorized", { status: 401 });
     }
 
     const server = await db.server.delete({
@@ -35,7 +35,7 @@ export async function PATCH(
     const { name, imageUrl } = await req.json();
 
     if (!profile) {
-      return new NextResponse("Unauthorized", { status: 404 });
+      return new NextResponse("Unauthorized", { status: 401 });
     }
 
     const server = await db.server.update({

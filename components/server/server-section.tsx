@@ -14,7 +14,7 @@ interface ServerSectionProps {
   channelType?: ChannelType;
   server?: ServerWithMembersWithProfiles;
 }
-
+ 
 export const ServerSection = ({
   label,
   role,
