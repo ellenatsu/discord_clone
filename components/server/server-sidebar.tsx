@@ -117,6 +117,15 @@ export const ServerSidebar = async ({ serverId }: ServerSidebarProps) => {
                   id: channel.id,
                 })),
               },
+              {
+                label: "Members",
+                type: "member",
+                data: members?.map((member) => ({
+                  id: member.id,
+                  name: member.profile.name,
+                  icon: roleIconMap[member.role],
+                }))
+              },
             ]}
           />
         </div>
