@@ -38,9 +38,8 @@ const formSchema = z.object({
 });
 
 export const CreateServerModal = () => {
-
-    const { isOpen, onClose, type } = useModal();
-    const isModalOpen = isOpen && type === "createServer";
+  const { isOpen, onClose, type } = useModal();
+  const isModalOpen = isOpen && type === "createServer";
 
   const router = useRouter();
 
@@ -55,13 +54,12 @@ export const CreateServerModal = () => {
   const isLoading = form.formState.isSubmitting;
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    console.log(values);
     try {
       await axios.post("/api/servers", values);
 
       form.reset();
       router.refresh();
-    
+      handleClose;
     } catch (error) {
       console.log(error);
     }
@@ -70,8 +68,7 @@ export const CreateServerModal = () => {
   const handleClose = () => {
     form.reset();
     onClose();
-  }
-
+  };
 
   return (
     <Dialog open={isModalOpen} onOpenChange={handleClose}>
@@ -118,7 +115,7 @@ export const CreateServerModal = () => {
                         className="bg-zinc-300/50 border-0 focus-visible:ring-0 text-black focus-visible:ring-offset-0"
                         placeholder="Enter server name"
                         {...field}
-                      /> 
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
