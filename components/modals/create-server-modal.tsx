@@ -4,7 +4,6 @@ import * as z from "zod";
 import axios from "axios";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useState } from "react";
 
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -27,8 +26,6 @@ import {
 import { FileUpload } from "@/components/file-upload";
 import { useRouter } from "next/navigation";
 import { useModal } from "@/hooks/use-modal-store";
-import { Switch } from "../ui/switch";
-import { Label } from "../ui/label";
 
 const formSchema = z.object({
   name: z.string().min(1, {
