@@ -7,6 +7,7 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useParams, useRouter } from "next/navigation";
 import { Edit, FileIcon, ShieldAlert, ShieldCheck, Trash } from "lucide-react";
 
 import { cn } from "@/lib/utils";
@@ -66,10 +67,16 @@ export const ChatItem = ({
   const isPDF = fileType === "pdf" && fileUrl;
   const isImage = !isPDF && fileUrl;
 
+  const router = useRouter();
+  const params = useParams();
+
+  const onMemberClick = () => {
+    if(member.id === currentMember.id) return;
+    router.push(`/servers/${params?.serverId}/conversations/${member.id}`);
+  }
+
   //edit/delete message
   const [isEditing, setIsEditing] = useState(false);
-  const [isDeleting, setIsDeleting] = useState(false);
-
   const { onOpen } = useModal();
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -120,7 +127,7 @@ export const ChatItem = ({
     <div className="relative group flex items-center hover:bg-black/5 p-4 transition w-full">
       <div className="group flex gap-x-2 items-start w-full">
         <div
-          onClick={() => {}}
+          onClick={onMemberClick}
           className="cursor-pointer hover:drop-shadow-md transition"
         >
           <UserAvatar src={member.profile.imageUrl} />
@@ -130,7 +137,7 @@ export const ChatItem = ({
           <div className="flex items-center gap-x-2">
             <div className="flex items-center">
               <p
-                onClick={() => {}}
+                onClick={onMemberClick}
                 className="font-semibold text-sm hover:underline cursor-pointer"
               >
                 {member.profile.name}
