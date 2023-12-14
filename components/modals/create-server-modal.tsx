@@ -27,14 +27,14 @@ import {
 import { FileUpload } from "@/components/file-upload";
 import { useRouter } from "next/navigation";
 import { useModal } from "@/hooks/use-modal-store";
+import { Switch } from "../ui/switch";
+import { Label } from "../ui/label";
 
 const formSchema = z.object({
   name: z.string().min(1, {
     message: "Server name is required.",
   }),
-  imageUrl: z.string().min(1, {
-    message: "Server image is required.",
-  }),
+  imageUrl: z.string().optional(), // Make imageUrl optional
 });
 
 export const CreateServerModal = () => {
@@ -56,10 +56,9 @@ export const CreateServerModal = () => {
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       await axios.post("/api/servers", values);
-
       form.reset();
       router.refresh();
-      handleClose;
+      onClose();
     } catch (error) {
       console.log(error);
     }
@@ -78,7 +77,7 @@ export const CreateServerModal = () => {
             Customize your server
           </DialogTitle>
           <DialogDescription className="text-center text-zinc-500">
-            Give your server a personality with a name and an image.
+            Give your server a personality with a name and an image(optional).
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>

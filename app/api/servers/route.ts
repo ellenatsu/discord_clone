@@ -8,6 +8,7 @@ import { currentProfile } from "@/lib/current-profile";
 export async function POST(req: Request) {
   try {
     const { name, imageUrl } = await req.json();
+
     const profile = await currentProfile();
 
     if (!profile) {
@@ -18,7 +19,7 @@ export async function POST(req: Request) {
       data: {
         profileId: profile.id,
         name,
-        imageUrl,
+        imageUrl: imageUrl || null,
         inviteCode: uuidv4(),
         channels: {
           create: [{ name: "general", profileId: profile.id }],

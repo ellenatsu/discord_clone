@@ -25,52 +25,55 @@ export default async function handler(
     if (!conversationId) {
       return res.status(400).json({ message: "Conversation ID missing" });
     }
-    
+
     const conversation = await db.conversation.findFirst({
-      where:{
+      where: {
         id: conversationId as string,
         OR: [
           {
-            memberOne:{
-              profileId: profile.id
-            }
+            memberOne: {
+              profileId: profile.id,
+            },
           },
           {
-            memberTwo:{
-              profileId: profile.id
-            }
-          }
-        ]
+            memberTwo: {
+              profileId: profile.id,
+            },
+          },
+        ],
       },
-      include:{
+      include: {
         memberOne: {
-          include:{
-            profile: true
-          }
+          include: {
+            profile: true,
+          },
         },
         memberTwo: {
-          include:{
-            profile: true
-          }
-        }
-      }
-    })
-  
+          include: {
+            profile: true,
+          },
+        },
+      },
+    });
 
+    if (!conversation) {
+      return res.status(404).json({ message: "Conversation not found" });
+    }
 
-    const member = server.members.find(
-      (member) => member.profileId === profile.id
-    );
+    const member =
+      conversation.memberOne.profileId === profile.id
+        ? conversation.memberOne
+        : conversation.memberTwo;
 
     if (!member) {
       return res.status(404).json({ message: "Member not found" });
     }
 
-    const message = await db.message.create({
+    const message = await db.directMessage.create({
       data: {
         content,
         fileUrl,
-        channelId: channelId as string,
+        conversationId: conversationId as string,
         memberId: member.id,
       },
       include: {
@@ -82,12 +85,12 @@ export default async function handler(
       },
     });
     //for socket io
-    const channelKey = `chat:${channelId}:messages`;
+    const channelKey = `chat:${conversationId}:messages`;
     res?.socket?.server?.io?.emit(channelKey, message);
 
     return res.status(200).json({ message });
   } catch (error) {
-    console.log("[MESSAGES_POST]", error);
+    console.log("[DIRECT_MESSAGES_POST]", error);
     return res.status(500).json({ message: "Internal Error" });
   }
 }
