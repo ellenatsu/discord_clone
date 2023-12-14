@@ -80,7 +80,7 @@ const ServerSearch = ({ data }: ServerSearchProps) => {
           {data.map(({ label, type, data }) => {
             if (!data?.length) return null;
             return (
-              <CommandGroup>
+              <CommandGroup key={label} heading={label}>
                 {data?.map(({ id, icon, name }) => {
                   return (
                     <CommandItem
