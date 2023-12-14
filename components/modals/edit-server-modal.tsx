@@ -32,9 +32,7 @@ const formSchema = z.object({
   name: z.string().min(1, {
     message: "Server name is required.",
   }),
-  imageUrl: z.string().min(1, {
-    message: "Server image is required.",
-  }),
+  imageUrl: z.string().optional(),
 });
 
 export const EditServerModal = () => {
@@ -54,7 +52,7 @@ export const EditServerModal = () => {
   useEffect(() => {
     if (server) {
       form.setValue("name", server.name);
-      form.setValue("imageUrl", server.imageUrl);
+      if (server.imageUrl) form.setValue("imageUrl", server.imageUrl);
     }
   }, [server, form]);
 
