@@ -17,7 +17,7 @@ export const useChatScroll = ({
   count,
 }: ChatScrollProps) => {
   const [hasInitialized, setHasInitialized] = useState(false);
-  const [showNewMessageSeparator, setShowNewMessageSeparator] = useState(false); //for show new message separator
+ 
   
   //user manually scroll up or down
   useEffect(() => {
@@ -35,11 +35,7 @@ export const useChatScroll = ({
         return false;
       }
 
-      const distanceFromBottom =
-        topDiv.scrollHeight - topDiv.scrollTop - topDiv.clientHeight;
-      if (distanceFromBottom <= 100) {
-        setShowNewMessageSeparator(false);
-      }
+
     };
 
     topDiv?.addEventListener("scroll", handleScroll);
@@ -47,7 +43,7 @@ export const useChatScroll = ({
     return () => {
       topDiv?.removeEventListener("scroll", handleScroll);
     };
-  }, [shouldLoadMore, loadMore, chatRef, setShowNewMessageSeparator]);
+  }, [shouldLoadMore, loadMore, chatRef]);
 
   //Auto-Scrolling to the Bottom
   useEffect(() => {
@@ -74,14 +70,7 @@ export const useChatScroll = ({
           behavior: "smooth",
         });
       }, 100);
-    } else {
-        setShowNewMessageSeparator(true);
-    }
+    } 
   }, [bottomRef, chatRef, count, hasInitialized]);
 
-
-  return {
-    showNewMessageSeparator,
-    setShowNewMessageSeparator, // Also return the setter function
-  };
 };

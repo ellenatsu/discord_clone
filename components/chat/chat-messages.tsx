@@ -1,6 +1,6 @@
 "use client";
 
-import { ElementRef, Fragment, useRef } from "react";
+import { ElementRef, Fragment, useCallback, useRef, useState } from "react";
 import { Loader2, ServerCrash } from "lucide-react";
 import { format } from "date-fns";
 import { Member, Message, Profile } from "@prisma/client";
@@ -41,6 +41,18 @@ export const ChatMessages = ({
   paramValue,
   type,
 }: ChatMessagesProps) => {
+  //for new messages
+  const [hasNewMessages, setHasNewMessages] = useState(false);
+  const [showNewMessageSeparator, setShowNewMessageSeparator] = useState(false);
+  // Define the callback for new messages
+  const handleNewMessage = useCallback(
+    (message: MessageWithMemberWithProfile) => {
+      //might need to check the true new
+      setHasNewMessages(true);
+    },
+    []
+  );
+
   const queryKey = `chat:${chatId}`;
   const addKey = `chat:${chatId}:messages`;
   const updateKey = `chat:${chatId}:messages:update`;
@@ -48,24 +60,27 @@ export const ChatMessages = ({
   const chatRef = useRef<ElementRef<"div">>(null);
   const bottomRef = useRef<ElementRef<"div">>(null);
 
-  const { 
-    data, fetchNextPage, hasNextPage, isFetchingNextPage, status
-  } = useChatQuery({
-    queryKey,
-    apiUrl,
-    paramKey,
-    paramValue,
-  });
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, status } =
+    useChatQuery({
+      queryKey,
+      apiUrl,
+      paramKey,
+      paramValue,
+    });
 
-  useChatSocket({ queryKey, addKey, updateKey});
-  const { showNewMessageSeparator, setShowNewMessageSeparator } = useChatScroll({ 
-    chatRef, 
+  useChatSocket({
+    queryKey,
+    addKey,
+    updateKey,
+    onNewMessage: handleNewMessage,
+  });
+  useChatScroll({
+    chatRef,
     bottomRef,
     loadMore: fetchNextPage,
     shouldLoadMore: !isFetchingNextPage && !!hasNextPage,
-    count: data?.pages?.[0]?.items?.length ?? 0
+    count: data?.pages?.[0]?.items?.length ?? 0,
   });
-
 
   if (status === "loading") {
     return (
@@ -90,10 +105,8 @@ export const ChatMessages = ({
   }
   return (
     <div ref={chatRef} className="flex-1 flex flex-col py-4 overflow-y-auto">
-      {!hasNextPage && <div className="flex-1 "/>}
-      {!hasNextPage && (
-        <ChatWelcome type={type} name={name} />
-      )} 
+      {!hasNextPage && <div className="flex-1 " />}
+      {!hasNextPage && <ChatWelcome type={type} name={name} />}
       {hasNextPage && (
         <div className="flex justify-center">
           {isFetchingNextPage ? (
@@ -106,10 +119,19 @@ export const ChatMessages = ({
               Load previous messages
             </button>
           )}
-          </div>
+        </div>
       )}
       <div className="flex flex-col-reverse mt-auto">
-        {showNewMessageSeparator && <div>TODO: i want to make a new message separator here</div>}
+        {/* {hasNewMessages && (
+          <div className="flex items-center justify-center my-2">
+            <div className="h-[1px] w-full bg-red-500" /> 
+            <div className="bg-red-500 text-white px-2 py-1 rounded-md mx-2">
+              New
+            </div>
+            <div className="h-[1px] w-full bg-red-500" />
+          </div> 
+        )}  */}
+
         {data?.pages?.map((group, i) => (
           <Fragment key={i}>
             {group.items.map((message: MessageWithMemberWithProfile) => (
